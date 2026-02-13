@@ -52,6 +52,9 @@ Servo scanServo;              // Servo
 
 int state = 0;
 int delta_turn = 0;
+int avg_distance = 0; 
+int avg_angle = 0;
+int timer = 50;
 
 long randNumber;
 
@@ -191,7 +194,6 @@ int getDistance() {
 
 void setup() {
   // setup LED
-  FastLED.addLeds<NEOPIXEL, PIN_RBGLED>(leds, NUM_LEDS);
   FastLED.setBrightness(50); // 0-255
   
   // Motor pins
@@ -233,7 +235,6 @@ void setup() {
   // Initialize Gyro - hard stop if failed
   if (!setupGyro()) {
     Serial.println("Failed setting up gyro...");
-    ledOn(CRGB::Red);
     while (true);  // Hard stop
   }
 
@@ -321,44 +322,75 @@ void driver()
   bool white_left = white_is_under(left);
   bool white_right = white_is_under(right);
 
-  // Getting averages
-  update_array(distances, DISTANCE_LOOKBACK, d_i++, getDistance());
-  update_array(angles, GYRO_LOOKBACK, g_i++, getAngle());
-
-  int avg_distance = get_array_average(distances, DISTANCE_LOOKBACK);
-  int avg_angle = get_array_average(angles, GYRO_LOOKBACK);
+  // move_motors(NORMAL_SPEED, NORMAL_SPEED);
 
 
-  if (wall_ahead())
-  {
-    delta_turn = -90
+  if (white_left && white_right && white_center){
+    reverse();
+    turn_90();
   }
 
-  move_motors(NORMAL_SPEED, NORMAL_SPEED);
+  if (white_left){
+    print("TURN", "turning left", 0);
+    move_motors(NORMAL_SPEED + 50, NORMAL_SPEED - 50);
+  }
+
+  else if (white_right){
+    print("TURN", "turning right", 0);
+    move_motors(NORMAL_SPEED - 50, NORMAL_SPEED + 50);
+  }
+
+  else {
+    move_motors(NORMAL_SPEED + 5, NORMAL_SPEED);
+  }
+
+  if (wall_is_ahead())
+  {
+    delta_turn = -90;
+  }
+
+}
+
+
+void reverse(){
+  move_motors(-75 - 5, -75);
+  delay(100);
+  move_motors(NORMAL_SPEED + 5, NORMAL_SPEED);
+}
+
+
+void turn_90(){
+  move_motors(-100 + 5, 100);
+  delay(500);
+  move_motors(NORMAL_SPEED + 5, NORMAL_SPEED);
 }
 
 void turn()
 {
   if (abs(delta_turn) < GYRO_EPISLION)
   {
-    reset_array(angles, GYRO_LOOKBACK, 0);
     resetAngle();
     state = 0;
   }
 
-  delta_turn -= avg_angle;
+  print("main", "delta_turn =", delta_turn);
+  print("main", "avg_angle =", getAngle());
+  delta_turn -= getAngle();
+  resetAngle();
 
   if (delta_turn < 0)
   {
-    print("TURN", "turning left", 0);
+    // print("TURN", "turning left", 0);
     move_motors(-NORMAL_SPEED, NORMAL_SPEED);
   }
   else if (delta_turn > 0)
   {
-    print("TURN", "turning right", 0);
+    // print("TURN", "turning right", 0);
     move_motors(NORMAL_SPEED, -NORMAL_SPEED);
   }
 }
+
+
 
 // STATES
 // -1 TESTING PURPOSES (I'm sick and tired of the motor noises)
@@ -369,9 +401,15 @@ void loop()
 {
   updateGyroAngle();
 
-  if (delta_turn != 0)
+  
+  // Getting averages
+  update_array(distances, DISTANCE_LOOKBACK, d_i++, getDistance());
+  avg_distance = get_array_average(distances, DISTANCE_LOOKBACK);
+
+  if (avg_distance < MIN_DISTANCE)
   {
-    state = 1;
+    move_motors(0, 0);
+    state = -1;
   }
   switch (state)
   {
@@ -383,7 +421,7 @@ void loop()
       break;
     
     case 1:
-      turn();
+      // turn();
       break;
 
     default:
