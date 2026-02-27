@@ -1,3 +1,6 @@
+# Overview
+This repo is for a smart car for the CSCI 1062U Ontario Tech University class. This robot, based on the lab goals, will be able to solve a simple maze, make use of most sensors aboard (ultrasonic, line, gyro senosrs and servos). The code is spilt up into multiple files, labN.ino, setup.hpp, setup.cpp. setup.hpp contains the declarations of functions used within the setup.cpp and has all the helper functions used to run the code in order to not over populate the labN.ino.
+
 # How to install
 ```
 git clone https://github.com/im-aryamsharma/robo.git
