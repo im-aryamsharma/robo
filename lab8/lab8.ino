@@ -109,6 +109,9 @@ void setup() {
   print("MAIN", "setup done", 0);
 }
 
+// --------------- System functions and Math-----------------------
+
+// display system values for debugging 
 void print(String system, String msg, int d)
 {
   Serial.print("[" + system + "] " + msg + ": ");
@@ -145,6 +148,7 @@ bool wall_is_ahead()
   return avg_distance < MIN_DISTANCE;
 }
 
+// takes absolute value of int passed in, positive for forward, negative for backwards
 void move_motors(int lspeed, int rspeed)
 {
   if (lspeed >= 0) {
@@ -171,9 +175,10 @@ bool white_is_under(int val)
 }
 
 
-// --------------------------------------------------------------------
+// ------------------------Modes and States----------------------------------------
 void driver()
 {
+  //takes sensor data, turns it into integers and then returns a True of False value when compared with the Fixed Line Threshold value
   int left = analogRead(LINE_L);
   int center = analogRead(LINE_C);
   int right = analogRead(LINE_R);
@@ -182,8 +187,8 @@ void driver()
   bool white_left = white_is_under(left);
   bool white_right = white_is_under(right);
 
-  // move_motors(NORMAL_SPEED, NORMAL_SPEED);
 
+  // Basic Line following logic 
 
   if (white_left && white_right && white_center){
     reverse();
@@ -225,6 +230,7 @@ void turn_90(){
   move_motors(NORMAL_SPEED + 5, NORMAL_SPEED);
 }
 
+// More precise turning mechanism using the gyro sensor
 void turn()
 {
   if (abs(delta_turn) < GYRO_EPISLION)
@@ -281,7 +287,6 @@ void loop()
       break;
     
     case 1:
-      // turn();
       break;
 
     default:
