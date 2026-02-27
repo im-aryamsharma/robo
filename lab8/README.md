@@ -16,15 +16,15 @@ All the updated code is in the latest lab folder
 4. If you want to stop the program midway, press the red button to reset the robot. If you wish to start the same program again, go back to step 2.
 
 # Explanation
-In it's current state the robot follows a state based design pattern where state is as follows \
+In it's current state the robot follows a state based design pattern where state is as follows  
 
-Lab 5 \ 
+Lab 5  
 0. Tells the robot to go in a straight line until the ultrasonic sensors detect a wall, if the  distance to the wall is slightly futher than the MIN_DISTANCE constant it will back up, turn to a random direction and continue on state 0, if the wall is closer than MIN_DISTANCE than the robot will switch to state 1.
 1. State 1 will allow the robot to follow the object directly in front of it and it's speed will be based on the distance to the object. If it loses sight of the object it will then switch to state 2.
 2. State 2 will make the robot "check" it's surroundings and revert back to state 0 once it's sequence of move's is complete.
 3. State 3 is a line following mode and will revert to state 0 once the line has disappeared on all 3 line sensors. 
 
-Lab 7+ \ 
+Lab 7+  
 0. Tells the robot to go in a straight line until the line sensors detect a white line after which it switches to state 1.
 1. Turn 90 degrees clockwise and return back to state 1.
 
