@@ -76,7 +76,7 @@ void sticky_following()
   // gyro_turn(convert_servo_to_gyro_deg(best_angle));
 
   int offset = best_angle - 90;
-  int adjust = constrain(abs(offset) * 4, 0, NORMAL_SPEED);
+  int adjust = constrain(abs(offset) * 8, 0, NORMAL_SPEED);
 
   int left_speed = NORMAL_SPEED;
   int right_speed = NORMAL_SPEED;
