@@ -16,8 +16,8 @@
 #include "line_following.hpp"
 #include "sticky_following.hpp"
 
-SensorData sensor_data;
 extern int state;
+SensorData sensor_data;
 
 void setup() {
 	setupArduino();
@@ -54,18 +54,18 @@ void setup() {
 void loop()
 {
 	sensor_data = update_sensors();
-	state = -1;
+	// state = -1;
 
 	// print("main", "state", state);
-	// switch (-1)
 	switch (state)
 	{
 	case -1:
-		sticky_following();
+		// ledOn(get_roaming_colour(sensor_data.avg_distance));
+		// sticky_following();
 		break;
 	
 	case 0:
-		roaming();
+		sticky_following();
 		break;
 	
 	case 1:
